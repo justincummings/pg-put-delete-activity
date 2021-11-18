@@ -8,7 +8,7 @@ $(document).ready(function(){
 function addClickHandlers() {
   $('#submitBtn').on('click', handleSubmit);
   $('#bookShelf').on('click', '.deleteBtn', deleteBooks);
-  $('#bookShelf').on('click', '.readBtn', deleteBooks);
+  $('#bookShelf').on('click', '.readBtn', readBooks);
   
 
   // TODO - Add code for edit & delete buttons
@@ -64,7 +64,7 @@ function renderBooks(books) {
         <td>${book.author}</td>
         <td>${book.isRead}</td>
         <td><button class="deleteBtn" data-id="${book.id}">Delete</button>
-        <td><button class="readBtn" data-id="${book.id}">Mark As Read</button>
+        <td><button class="readBtn" data-id="${book.id}" data-read="${book.isRead}"">Mark As Read</button>
       </tr>
     `);
     //Line 67, need to pass button data for req.body of the "PUT"
@@ -85,12 +85,15 @@ function deleteBooks() {
 };
 
 function readBooks() {
+  console.log('in readBooks');
   const bookIdToMark = $(this).data('id');
+  const bookIsRead = $(this).data('read');
+  console.log('bookIsRead =', bookIsRead);
   console.log('bookIdToMark', bookIdToMark);
   $.ajax({
     type: 'PUT',
-    url: `/books/${bookIdToMark}`
-    // data:
+    url: `/books/${bookIdToMark}`,
+    data: {isRead: bookIsRead}
   }).then((res) => {
     refreshBooks();
   }).catch((err) => {
